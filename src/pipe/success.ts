@@ -21,7 +21,7 @@ export class Success implements Pipe<unknown, unknown[], unknown[][]> {
 		return this;
 	}
 
-	continue(task: ContinueTask<unknown>): Pipe<unknown, unknown[], unknown[][]> {
+	continue(task: ContinueTask<unknown>): any {
 		task(this.data);
 		return this;
 	}

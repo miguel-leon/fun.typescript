@@ -45,6 +45,8 @@ export interface ClearPipe<Current, Guards extends any[] = []> {
 	guard<Error>(): ClearPipe<Current, [Error | Guards[number]]>;
 
 	try<Next>(task: Task<Current, Next>): Pipe<Next, Guards extends [] ? [unknown] : Guards, [[Current]]>;
+
+	continue(task: ContinueTask<Current>): ClearPipe<Current, Guards>;
 }
 
 export interface Pipe<Current, Guards extends any[], Guarded extends any[][]> {
