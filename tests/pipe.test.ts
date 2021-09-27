@@ -7,7 +7,7 @@ describe('The Pipe interface', () => {
 		pipe(true)
 			.try(data => data ? 99 : 0)
 			.try(data => `I've got ${ data } problems!`)
-			.continue(result => {
+			.do(result => {
 				expect(result).toBe('I\'ve got 99 problems!')
 			});
 	});
@@ -45,5 +45,27 @@ describe('The Pipe interface', () => {
 			expect(thrown).toBe(caught);
 			expect(saved).toBe(lastData);
 		}
+	});
+
+	test('throws out when there is a throw within a do', () => {
+		expect(() => {
+			pipe()
+				.do(() => {
+					throw 'Error';
+				})
+		}).toThrow();
+	});
+
+	test('passes last result when the task argument for a try or do returns void', () => {
+		pipe('Last Result')
+			.try(data => {
+				`Do nothing with ${ data }`;
+			})
+			.do(data => {
+				`Do nothing with ${ data }`;
+			})
+			.do(result => {
+				expect(result).toBe('Last Result')
+			});
 	});
 });

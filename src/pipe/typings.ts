@@ -1,10 +1,11 @@
 import { ValidIndices, VoidToUndefined } from '../utility';
 
+
 export type Task<I, O> = Exclude<I, void> extends never ? () => O : (data: I) => O;
 
-export type CatchTask<E, I, O> = Exclude<I, void> extends never ? (error: E) => O | void : (error: E, lastData: VoidToUndefined<I>) => O | void;
+export type Next<I, O> = undefined extends O ? I : O;
 
-export type ContinueTask<I> = Exclude<I, void> extends never ? () => void : (data: I) => void;
+export type CatchTask<E, I, O> = Exclude<I, void> extends never ? (error: E) => O | void : (error: E, lastData: VoidToUndefined<I>) => O | void;
 
 
 export type PushGuarded<Current, Guarded extends any[][]> =
@@ -44,19 +45,19 @@ export type ReducePipe<Level extends number | undefined, Current, Guards extends
 export interface ClearPipe<Current, Guards extends any[] = []> {
 	guard<Error>(): ClearPipe<Current, [Error | Guards[number]]>;
 
-	try<Next>(task: Task<Current, Next>): Pipe<Next, Guards extends [] ? [unknown] : Guards, [[Current]]>;
+	try<Return>(task: Task<Current, Return>): Pipe<Next<Current, Return>, Guards extends [] ? [unknown] : Guards, [[Current]]>;
 
-	continue(task: ContinueTask<Current>): ClearPipe<Current, Guards>;
+	do<Return>(task: Task<Current, Return>): ClearPipe<Next<Current, Return>, Guards>;
 }
 
 export interface Pipe<Current, Guards extends any[], Guarded extends any[][]> {
 	guard<Error>(): Pipe<Current, [Error, ...Guards], [[], ...Guarded]>;
 
-	try<Next>(task: Task<Current, Next>): Pipe<Next, Guards, PushGuarded<Current, Guarded>>;
+	try<Return>(task: Task<Current, Return>): Pipe<Next<Current, Return>, Guards, PushGuarded<Current, Guarded>>;
 
 	catch(task: CatchTask<ErrorThrown<undefined, Guards>, DataGuarded<undefined, Guarded>, Current>): ReducePipe<undefined, Current, Guards, Guarded>;
 
 	catch<Level extends ValidIndices<Guards>>(task: CatchTask<ErrorThrown<Level, Guards>, DataGuarded<Level, Guarded>, Current>, level: Level): ReducePipe<Level, Current, Guards, Guarded>;
 
-	continue(task: ContinueTask<Current>): Pipe<Current, Guards, Guarded>;
+	do<Return>(task: Task<Current, Return>): Pipe<Next<Current, Return>, Guards, Guarded>;
 }

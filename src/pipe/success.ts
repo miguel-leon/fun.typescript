@@ -1,4 +1,4 @@
-import { ContinueTask, Pipe, Task } from './typings';
+import { Pipe, Task } from './typings';
 import { Failure } from './failure';
 
 
@@ -11,7 +11,8 @@ export class Success implements Pipe<unknown, unknown[], unknown[][]> {
 
 	try(task: Task<unknown, unknown>): any {
 		try {
-			return new Success(task(this.data));
+			const next = task(this.data);
+			return next == undefined ? this : new Success(next);
 		} catch (error) {
 			return new Failure(error, this.data);
 		}
@@ -21,8 +22,8 @@ export class Success implements Pipe<unknown, unknown[], unknown[][]> {
 		return this;
 	}
 
-	continue(task: ContinueTask<unknown>): any {
-		task(this.data);
-		return this;
+	do(task: Task<unknown, unknown>): any {
+		const next = task(this.data);
+		return next == undefined ? this : new Success(next);
 	}
 }

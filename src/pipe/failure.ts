@@ -25,7 +25,7 @@ export class Failure implements Pipe<unknown, unknown[], unknown[][]> {
 		}
 	}
 
-	continue(): Pipe<unknown, unknown[], unknown[][]> {
+	do(): Pipe<unknown, unknown[], unknown[][]> {
 		return this;
 	}
 }

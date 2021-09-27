@@ -14,7 +14,7 @@ export class Halt implements Pipe<unknown, unknown[], unknown[][]> {
 		return this;
 	}
 
-	continue(): Pipe<unknown, unknown[], unknown[][]> {
+	do(): Pipe<unknown, unknown[], unknown[][]> {
 		return this;
 	}
 }
