@@ -1,7 +1,7 @@
 {
   "name": "fun.typescript",
   "version": "0.0.1",
-  "description": "Fun Typescript",
+  "description": "Well typed constructs for functional style programming",
   "scripts": {
     "dev": "tsc --watch",
     "build": "tsc && tsc -p tsconfig-cjs.json && cp package.json , readme.md ./dist",
